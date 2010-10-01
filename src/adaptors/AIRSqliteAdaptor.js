@@ -5,7 +5,7 @@
 /*
 ADOBE SYSTEMS INCORPORATED
 Copyright 2007-2008 Adobe Systems Incorporated. All Rights Reserved.
- 
+
 NOTICE:		Adobe permits you to modify and distribute this file only in accordance with
 the terms of Adobe AIR SDK license agreement.  You may have received this file from a
 source other than Adobe.	Nonetheless, you may modify or
@@ -52,7 +52,7 @@ if (window.runtime)
 
 
 
- 
+
 /**
  * AIRSQLiteAdaptor
  * ===================
@@ -80,6 +80,7 @@ AIRSQLiteAdaptor.prototype = {
 		var opts = (typeof arguments[0] == 'string') ? {table:options} : options;
 	
 		this.name = merge('Lawnchair', opts.name);
+		this.keyName = merge('key', opts.keyName);
 		this.table = merge('field', opts.table);
 	
 		this.conn = new air.SQLConnection();
@@ -105,13 +106,13 @@ AIRSQLiteAdaptor.prototype = {
 		var insert = function(obj, callback) {
 			var id;
 
-			if (obj.key == undefined) {
+			if (obj[that.keyName] == undefined) {
 				id = that.uuid();
 			} else {
-				id = obj.key;
+				id = obj[that.keyName];
 			}
 	
-			delete(obj.key);
+			delete(obj[that.keyName]);
 	
 			var rs = that._execSql("INSERT INTO " + that.table + " (id, value, timestamp) VALUES (:id,:value,:timestamp)",
 				{
@@ -122,7 +123,7 @@ AIRSQLiteAdaptor.prototype = {
 			);
 	
 			if (callback != undefined) {
-				obj.key = id;
+				obj[that.keyName] = id;
 				callback(obj);
 			}
 		};
@@ -137,23 +138,23 @@ AIRSQLiteAdaptor.prototype = {
 			);
 	
 			if (callback != undefined) {
-				obj.key = id;
+				obj[that.keyName] = id;
 				callback(obj);
 			}
 		};
 	
 	
-		if (obj.key == undefined) {
+		if (obj[that.keyName] == undefined) {
 	
 			insert(obj, callback);
 		} else {
 	
-			this.get(obj.key, function(r) {
+			this.get(obj[that.keyName], function(r) {
 				var isUpdate = (r != null);
 	
 				if (isUpdate) {
-					var id = obj.key;
-					delete(obj.key);
+					var id = obj[that.keyName];
+					delete(obj[that.keyName]);
 					update(id, obj, callback);
 				} else {
 					insert(obj, callback);
@@ -175,7 +176,7 @@ AIRSQLiteAdaptor.prototype = {
 	
 		if (rs.data && rs.data.length> 0) {
 			var o = this.deserialize(rs.data[0].value);
-			o.key = key;
+			o[that.keyName] = key;
 			callback(o);
 		} else {
 			callback(null);
@@ -201,7 +202,7 @@ AIRSQLiteAdaptor.prototype = {
 			while (k < numrows) {
 				var thisdata = rs.data[k];
 				o = this.deserialize(thisdata.value);
-				o.key = thisdata.id;
+				o[that.keyName] = thisdata.id;
 					r.push(o);
 				k++;
 			}
@@ -219,7 +220,7 @@ AIRSQLiteAdaptor.prototype = {
 	*/
 	remove:function(keyOrObj, callback) {
 	
-		var key = (typeof keyOrObj == 'string') ? keyOrObj : keyOrObj.key;
+		var key = (typeof keyOrObj == 'string') ? keyOrObj : keyOrObj[that.keyName];
 		var rs = this._execSql("DELETE FROM " + this.table + " WHERE id = :id",
 			{
 				':id':key
