@@ -5,6 +5,8 @@
  *
  * Based on ppk's http://www.quirksmode.org/js/cookies.html
  *
+ * @depend LawnchairAdaptorHelpers.js
+ *
  */
 var CookieAdaptor = function(options) {
   for (var i in LawnchairAdaptorHelpers) {

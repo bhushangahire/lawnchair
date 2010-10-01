@@ -3,6 +3,8 @@
  * ===================
  * Sqlite implementation for Lawnchair.
  *
+ * @depend LawnchairAdaptorHelpers.js
+ *
  */
 var WebkitSQLiteAdaptor = function(options) {
   for (var i in LawnchairAdaptorHelpers) {

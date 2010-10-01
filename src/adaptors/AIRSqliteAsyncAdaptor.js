@@ -12,6 +12,9 @@ source other than Adobe.	Nonetheless, you may modify or
 distribute this file only in accordance with such agreement.
 
 http://www.adobe.com/products/air/tools/sdk/eula/
+
+@depend LawnchairAdaptorHelpers.js
+
 */
 
 var air;

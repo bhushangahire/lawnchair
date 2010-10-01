@@ -4,6 +4,9 @@
  * Implementation that uses the BlackBerry Persistent Storage mechanism. This is only available in PhoneGap BlackBerry projects
  * See http://www.github.com/phonegap/phonegap-blackberry
  *
+ *
+ * @depend LawnchairAdaptorHelpers.js
+ *
  */
 var BlackBerryPersistentStorageAdaptor = function(options) {
   for (var i in LawnchairAdaptorHelpers) {

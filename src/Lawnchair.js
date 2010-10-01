@@ -3,6 +3,15 @@
  * =========
  * A lightweight JSON document store.
  *
+ * @depend adaptors/AIRSqliteAdaptor.js
+ * @depend adaptors/AIRSqliteAsyncAdaptor.js
+ * @depend adaptors/BlackBerryPersistentStorageAdaptor.js
+ * @depend adaptors/CookieAdaptor.js
+ * @depend adaptors/DOMStorageAdaptor.js
+ * @depend adaptors/GearsSQLiteAdaptor.js
+ * @depend adaptors/UserDataStorage.js
+ * @depend adaptors/WebkitSQLiteAdaptor.js
+ *
  */
 var Lawnchair = function(opts) {
 	this.init(opts);

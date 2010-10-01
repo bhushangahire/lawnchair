@@ -6,6 +6,8 @@
  * - originally authored by Joseph Pecoraro
  * - window.name code courtesy Remy Sharp: http://24ways.org/2009/breaking-out-the-edges-of-the-browser
  *
+ * @depend LawnchairAdaptorHelpers.js
+ *
  */
 var DOMStorageAdaptor = function(options) {
 	for (var i in LawnchairAdaptorHelpers) {

@@ -3,6 +3,8 @@
  * ===================
  * UserData implementation for Lawnchair for older IE browsers.
  *
+ * @depend LawnchairAdaptorHelpers.js
+ *
  */
 var UserDataAdaptor = function(options) {
     for (var i in LawnchairAdaptorHelpers) {

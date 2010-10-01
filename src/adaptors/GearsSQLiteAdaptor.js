@@ -1,5 +1,7 @@
 // init.js directly included to save on include traffic
 //
+// @depend LawnchairAdaptorHelpers.js
+//
 // Copyright 2007, Google Inc.
 //
 // Redistribution and use in source and binary forms, with or without
