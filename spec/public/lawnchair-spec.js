@@ -1,6 +1,9 @@
 module('Lawnchair', {
     setup:function() {
         // I like to make all my variables globals. Starting a new trend.
+        if (typeof keyName === 'undefined') {
+          window.keyName = 'key';
+        }
         me = {name:'brian', age:30};
         store.nuke();
     },
@@ -28,7 +31,7 @@ module('Lawnchair', {
             store.all('equals(r.length, 0, "should have 0 length when using shorthand syntax"); furtherassertions();');
         });
 	});
-    
+
     test( 'save()', function() {
         QUnit.stop();
         expect(4);
@@ -39,8 +42,9 @@ module('Lawnchair', {
                     store.all(function(r) {
                         equals(r.length, 2, 'should have length 2 after saving another object using full callback');
                         var id = 'donotdie';
-                        store.save({key:id, foo:'bar'}, function(o){
-                            equals(o.key, id, 'should preserve key in save callback on object');
+                        var obj = {foo: 'bar'}; obj[keyName] = id;
+                        store.save(obj, function(o){
+                            equals(o[keyName], id, 'should preserve key in save callback on object');
                             start();
                         });
                     });
@@ -49,7 +53,7 @@ module('Lawnchair', {
             store.all('equals(r.length, 1, "should have length 1 after saving something using shorthand callback"); furtherassertions();');
         });
     });
-    
+
     test( 'all()', function() {
         QUnit.stop();
         expect(2);
@@ -61,15 +65,16 @@ module('Lawnchair', {
             store.all('ok(typeof r.length != "undefined" && r.length != null, "should return an object with a length property in callback, using shorthand callback"); furtherassertions();');
         });
     });
-    
+
     test( 'get()', function() {
         QUnit.stop();
         expect(3);
-		store.save({key:'xyz123', name:'tim'}, function(){
+        var obj = {name:'tim'}; obj[keyName] = 'xyz123';
+		store.save(obj, function(){
     		store.get('xyz123', function(r) {
     			equals(r.name, 'tim', 'should return proper object when calling get with a key');
     			start();
-    		});		    
+    		});		
 		});
         store.get('doesntexist', function(r) {
             ok(true, 'should call callback even for non-existent key');
@@ -113,7 +118,7 @@ module('Lawnchair', {
             });
         });
     });
-    
+
     test( 'remove()', function() {
         QUnit.stop();
         expect(4);
@@ -125,14 +130,16 @@ module('Lawnchair', {
                     var callback = function() {
                         store.all(function(r) {
                             equals(r.length, 0, "should have length 0 after saving, finding and removing a record and using a callback");
-                            store.save({key:'die', name:'dudeman'});
+                            var obj = {name:'dudeman'}; obj[keyName] = 'die';
+                            store.save(obj);
                             store.remove('die');
                             store.all(function(rec) {
                                 equals(r.length, 0, "should have length 0 after saving and removing by key");
                                 var cb = function() {
                                     store.all('equals(r.length, 0, "should have length 0 after saving and removing by key when using a callback"); start();');
                                 };
-                                store.save({key:'die', name:'dudeman'});
+                                obj = {name:'dudeman'}; obj[keyName] = 'die';
+                                store.save(obj);
                                 store.remove('die', cb);
                             });
                         });
@@ -148,20 +155,21 @@ module('Lawnchair', {
 				store.all('equals(r.length, 0, "should have length 0 after saving, finding, and removing a record"); furtherassertions();');
 		});
     });
-    
+
     test( 'Lawnchair helpers', function() {
         equals(store.adaptor.uuid().length, 36, "uuid() function should create a 36 character string (is this a test, really?)");
     });
     /*	
-    
+
     should( 'get 10 items in a page.', function() {
         store.nuke();
         for (var i = 0; i < 300; i++) {
-        	store.save({key: i, value: "test" + i});
+          var obj = {value: "test" + i}; obj[keyName] = i;
+        	store.save(obj);
         }
         store.paged(1,'equals(r.length, 10); start();');
     });
-    
+
 // ---
 
 });
@@ -184,8 +192,10 @@ context('Lawnchair with multiple collections', function(){
 
 	should( 'save one key in each store.', function(){
 		QUnit.stop();
-		dba.save({key:'a'}, function() {
-			dbb.save({key:'b'}, function() {
+    var obj = {}; obj[keyName] = 'a';
+		dba.save(obj, function() {
+      obj = {}; obj[keyName] = 'b';
+			dbb.save(obj, function() {
 				dba.all( function(rs){
 					equals(rs.length, 1);
 					dbb.all('equals(r.length, 1); start();');

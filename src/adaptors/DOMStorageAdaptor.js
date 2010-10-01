@@ -20,6 +20,7 @@ DOMStorageAdaptor.prototype = {
 		var self = this;
 		this.storage = this.merge(window.localStorage, options.storage);
 		this.table = this.merge('field', options.table);
+		this.keyName = this.merge('key', options.keyName);
 		
 		if (!window.Storage) {
 			this.storage = (function () {
@@ -47,11 +48,11 @@ DOMStorageAdaptor.prototype = {
 	},
 
 	save:function(obj, callback) {
-		var id = this.table + '::' + (obj.key || this.uuid());
-		delete obj.key;
+		var id = this.table + '::' + (obj[this.keyName] || this.uuid());
+		delete obj[this.keyName];
 		this.storage.setItem(id, this.serialize(obj));
 		if (callback) {
-		    obj.key = id.split('::')[1];
+		    obj[this.keyName] = id.split('::')[1];
 		    callback(obj);
 		}
 	},
@@ -59,9 +60,9 @@ DOMStorageAdaptor.prototype = {
     get:function(key, callback) {
         var obj = this.deserialize(this.storage.getItem(this.table + '::' + key));
         var cb = this.terseToVerboseCallback(callback);
-        
+
         if (obj) {
-            obj.key = key;
+            obj[this.keyName] = key;
             if (callback) cb(obj);
         } else {
 			if (callback) cb(null);
@@ -77,7 +78,7 @@ DOMStorageAdaptor.prototype = {
 			var key = id.split('::').slice(1).join("::");
 			if (tbl == this.table) {
 				var obj = this.deserialize(this.storage.getItem(id));
-				obj.key = key;
+				obj[this.keyName] = key;
 				results.push(obj);
 			}
 		}
@@ -86,7 +87,7 @@ DOMStorageAdaptor.prototype = {
 	},
 
 	remove:function(keyOrObj, callback) {
-		var key = this.table + '::' + (typeof keyOrObj === 'string' ? keyOrObj : keyOrObj.key);
+		var key = this.table + '::' + (typeof keyOrObj === 'string' ? keyOrObj : keyOrObj[this.keyName]);
 		this.storage.removeItem(key);
 		if(callback)
 		  callback();
